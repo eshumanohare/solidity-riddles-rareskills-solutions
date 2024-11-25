@@ -103,20 +103,3 @@ contract Depositoor is IERC721Receiver {
         rewardToken.transfer(_a, amountToSend);
     }
 }
-
-contract Attack {
-    IERC20 private rewardToken;
-    IERC721 public nft;
-    Depositoor depositor;
-
-    constructor() {
-        nft = new NftToStake(address(this));
-        depositor = new Depositoor(nft);
-        rewardToken = new RewardToken(address(depositor));
-        depositor.setRewardToken(rewardToken);
-    }
-
-    function attack() public {
-
-    }
-}
